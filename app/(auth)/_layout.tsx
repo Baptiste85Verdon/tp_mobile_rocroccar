@@ -17,29 +17,21 @@ export default function RootLayout() {
             }}
         >
              <Tabs.Screen
-                name="test"
+                name="signIn"
                 options={{ 
-                    title: "Test",
+                    title: "signIn",
                     tabBarIcon: ({ color, focused}) => (
                         <Ionicons name={focused? 'home-sharp' : 'home-outline'} color={color} size={24} />
                     ),
                 }} />
             <Tabs.Screen
-                name="index"
+                name="signUp"
                 options={{ 
-                    title: "Home",
+                    title: "signUp",
                     tabBarIcon: ({ color, focused}) => (
-                        <Ionicons name={focused? 'home-sharp' : 'home-outline'} color={color} size={24} />
+                        <Ionicons name={focused? 'information-circle' : 'information-circle-outline'} color={color} size={24} />
                     ),
                 }} />
-            <Tabs.Screen
-                name="about" 
-                options={{ title: "About",
-                    tabBarIcon: ({ color, focused}) => (
-                        <Ionicons name={focused? 'information-circle' : 'information-circle-outline'} color={color} size={24}/>
-                    ),
-                }}
-            />
         </Tabs>
     );
 }
