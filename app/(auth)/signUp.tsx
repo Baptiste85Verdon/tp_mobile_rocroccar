@@ -1,50 +1,85 @@
 import Button from "@/components/Button";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { router } from "expo-router";
+import { createUserWithEmailAndPassword, getAuth, updateProfile } from "firebase/auth";
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, TextInput, View } from "react-native";
 
 
 const SignUpScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [surname, setSurname] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleSignIn = () => {
-        if (email === '' || password === '') {
+    const handleSignUp = () => {
+        if (email === '' || password === '' || surname === '') {
             alert('Veuillez remplir tous les champs.');
             return;
         }
+
+        setIsLoading(true);
+
         const auth = getAuth();
-        signInWithEmailAndPassword(auth, email, password)
+        createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
-                alert('Connexion réussie ! Bienvenue, ' + user.email);
+                // Ajouter le prénom
+                updateProfile(user, { displayName: surname })
+                    .then(() => {
+                        alert('Inscription réussie ! Bienvenue, ' + user.displayName);
+                        router.replace('/(tabs)');
+                    });
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                console.error('Erreur de connexion :', errorCode, errorMessage);
-                alert('Erreur de connexion. Veuillez vérifier vos identifiants.' + '\nEmail: ' + email + '\nMot de passe: ' + password);
+                console.error('Erreur d\'inscription :', errorCode, errorMessage);
+                // Gestion en fonction du code d'erreur
+                if (errorCode === 'auth/email-already-in-use') {
+                    alert('Cet email est déjà utilisé. Veuillez vous créer un compte avec un autre email.');
+                } else if (errorCode === 'auth/invalid-email') {
+                    alert('L\'email fourni est invalide. Veuillez vérifier le format de votre email.');
+                } else {
+                    alert('Une erreur est survenue lors de l\'inscription. Veuillez réessayer plus tard.');
+                }
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
+            
 
     };
 
     return (
         <View style={styles.container}>
             <View style={styles.form}>
-                <Text style={styles.titre}>Connexion</Text>
+                <Text style={styles.titre}>Bienvenue</Text>
+                <Text style={styles.text}>Créez votre compte</Text>
+                <View style={styles.inputContainer}>
+                    <Text style={styles.label}>Prénom</Text>
+                    <TextInput style={styles.input} placeholder="Entrez votre prénom" value={surname} onChangeText={setSurname} />
+                </View>
                 <View style={styles.inputContainer}>
                     <Text style={styles.label}>Email</Text>
-                    <TextInput style={styles.input} placeholder="Entrez votre email" value={email} onChangeText={setEmail} />
+                    <TextInput style={styles.input} placeholder="Entrez votre email" value={email} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} onChangeText={setEmail} />
                 </View>
                 <View style={styles.inputContainer}>
                     <Text style={styles.label}>Mot de passe</Text>
-                    <TextInput style={styles.input} placeholder="Entrez votre mot de passe" secureTextEntry value={password} onChangeText={setPassword} />
+                    <TextInput style={styles.input} placeholder="Entrez votre mot de passe" secureTextEntry value={password} autoCapitalize="none" autoCorrect={false} onChangeText={setPassword} />
                 </View>
                 <View style={{ alignItems: 'center'}}>
-                    <Button label="Se connecter" theme="primaryConnexion" onPress={handleSignIn} />
+                    {isLoading ? (
+                        <ActivityIndicator size="large" color="#fff" style={{ marginTop: 15 }} />
+                    ) : (
+                        <Button label="Créer votre compte" theme="primaryConnexion" onPress={handleSignUp} />
+                    )}
                 </View>
             </View>
+            <View>
+                <Text style={{ color: '#fff', marginTop: 20, textAlign: 'center'}}>Déjà un compte ?</Text>
+                <Button label="Se connecter" onPress={() =>  router.push('/signIn')} />
+                </View>
         </View>
     );
 }
@@ -61,9 +96,13 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
-        alignItems: 'center',
-        justifyContent: 'center',
-
+        textAlign: 'center',
+    },
+    text: {
+        color: '#fff',
+        fontSize: 16,
+        marginBottom: 20,
+        textAlign: 'center'
     },
     label: {
         color: '#fff',
