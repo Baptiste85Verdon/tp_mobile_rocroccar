@@ -25,9 +25,33 @@ export default function RootLayout() {
                     ),
                 }} />
             <Tabs.Screen
+                name="trips"
+                options={{ 
+                    title: "Trajets",
+                    tabBarIcon: ({ color, focused}) => (
+                        <Ionicons name={focused? 'car-sharp' : 'car-outline'} color={color} size={24} />
+                    ),
+                }} />
+            <Tabs.Screen
+                name="tripsCreation"
+                options={{
+                    title: "Créer un trajet",
+                    tabBarIcon: ({ color, focused}) => (
+                        <Ionicons name={focused? 'add-circle-sharp' : 'add-circle-outline'} color={color} size={24} />
+                    ),
+                }} />
+            <Tabs.Screen
+                name="myTrips"
+                options={{ 
+                    title: "Mes trajets",
+                    tabBarIcon: ({ color, focused}) => (
+                        <Ionicons name={focused? 'car-sharp' : 'car-outline'} color={color} size={24} />
+                    ),
+                 }} />
+            <Tabs.Screen
                 name="profile"
                 options={{ 
-                    title: "Profile",
+                    title: "Profil",
                     tabBarIcon: ({ color, focused}) => (
                         <Ionicons name={focused? 'person-sharp' : 'person-outline'} color={color} size={24} />
                     ),

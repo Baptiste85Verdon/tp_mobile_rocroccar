@@ -12,7 +12,7 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titre}>Profile screen de :</Text>
+      <Text style={styles.titre}>Profile de :</Text>
       <Text style={styles.text}>Prénom : {auth.currentUser?.displayName}</Text>
       <Text style={styles.text}>Email : {auth.currentUser?.email}</Text>
       <Button label="Déconnexion" theme="secondary" onPress={handleSignOut} />

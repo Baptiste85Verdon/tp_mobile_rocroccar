@@ -40,7 +40,10 @@ const SignUpScreen = () => {
                     alert('Cet email est déjà utilisé. Veuillez vous créer un compte avec un autre email.');
                 } else if (errorCode === 'auth/invalid-email') {
                     alert('L\'email fourni est invalide. Veuillez vérifier le format de votre email.');
-                } else {
+                } else if (errorCode === 'auth/weak-password') {
+                    alert('Le mot de passe est trop faible. Veuillez choisir un mot de passe d\'au moins 6 caractères.');
+                } 
+                else {
                     alert('Une erreur est survenue lors de l\'inscription. Veuillez réessayer plus tard.');
                 }
             })
