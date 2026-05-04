@@ -1,4 +1,5 @@
 import { db } from "@/config/firebaseConfig";
+import { getAuth } from "firebase/auth";
 import { addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, orderBy, query, runTransaction, where } from "firebase/firestore";
 
 // Fonction pour récuperer les trajets depuis Firestore
@@ -69,10 +70,26 @@ export async function deleteTrip(tripId) {
     }
 }
 
-// Fonction pour soustraire une place disponible d'un trajet
+// Fonction pour récupérer les réservations d'un trajet
+export async function getTripReservations(tripId) {
+    try {
+        const snapshot = await getDocs(query(collection(db, "reservations"), where("tripId", "==", tripId)));
+        const reservations = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        return reservations;
+    } catch (error) {
+        console.error("Error fetching trip reservations: ", error);
+        return [];
+    }
+}
 export async function decrementAvailableSeats(tripId) {
     try {
         const trip = doc(db, "trips", tripId);
+        const currentUser = getAuth().currentUser;
+        
+        if (!currentUser) {
+            throw new Error("User not authenticated!");
+        }
+
         await runTransaction(db, async (transaction) => {
             const tripDoc = await transaction.get(trip);
             if (!tripDoc.exists()) {
@@ -81,6 +98,18 @@ export async function decrementAvailableSeats(tripId) {
             const currentAvailableSeats = tripDoc.data().nbplacedispo;
             if (currentAvailableSeats > 0) {
                 transaction.update(trip, { nbplacedispo: currentAvailableSeats - 1 });
+                
+                // Créer une entrée de réservation
+                const reservationData = {
+                    tripId: tripId,
+                    userId: currentUser.uid,
+                    userName: currentUser.displayName || 'Utilisateur anonyme',
+                    userEmail: currentUser.email || '',
+                    reservationDate: new Date(),
+                };
+                
+                const reservationRef = doc(collection(db, "reservations"));
+                transaction.set(reservationRef, reservationData);
             } else {
                 throw new Error("No available seats!");
             }

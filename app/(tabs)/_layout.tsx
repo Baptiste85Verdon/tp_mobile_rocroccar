@@ -19,14 +19,6 @@ export default function RootLayout() {
             <Tabs.Screen
                 name="index"
                 options={{ 
-                    title: "Home",
-                    tabBarIcon: ({ color, focused}) => (
-                        <Ionicons name={focused? 'home-sharp' : 'home-outline'} color={color} size={24} />
-                    ),
-                }} />
-            <Tabs.Screen
-                name="trips"
-                options={{ 
                     title: "Trajets",
                     tabBarIcon: ({ color, focused}) => (
                         <Ionicons name={focused? 'car-sharp' : 'car-outline'} color={color} size={24} />
@@ -59,10 +51,18 @@ export default function RootLayout() {
             <Tabs.Screen
                 name="testMap"
                 options={{ 
-                    title: "Test Map",
-                    tabBarIcon: ({ color, focused}) => (
-                        <Ionicons name={focused? 'map-sharp' : 'map-outline'} color={color} size={24} />
-                    ),
+                    href: null, // Masquer de la tab bar
+                }} />
+            <Tabs.Screen
+                name="testGeoloc"
+                options={{ 
+                    href: null, // Masquer de la tab bar
+                }} />
+            <Tabs.Screen
+                name="tripDetails"
+                options={{ 
+                    href: null, // Masquer de la tab bar
+                    title: "Détails",
                 }} />
         </Tabs>
     );

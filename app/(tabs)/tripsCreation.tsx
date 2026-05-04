@@ -19,13 +19,13 @@ export default function TripsCreationScreen() {
     const [selectedOption, setSelectedOption] = useState('Destination');
     const options = ['Destination', 'Départ'];
     
-    const SCHOOL_ADDRESS = "Lycée Campus Notre Dame du ROC";
+    const ADRESSE_CAMPUS = "Lycée Campus Notre Dame du ROC";
 
     const currentOrigin =
-    selectedOption === "Destination" ? depart : SCHOOL_ADDRESS;
+    selectedOption === "Destination" ? depart : ADRESSE_CAMPUS;
 
     const currentDestination =
-    selectedOption === "Destination" ? SCHOOL_ADDRESS : destination;
+    selectedOption === "Destination" ? ADRESSE_CAMPUS : destination;
 
     const handleDateChange = (event: any, selectedDate?: Date) => {
         const currentDate = selectedDate || date;
