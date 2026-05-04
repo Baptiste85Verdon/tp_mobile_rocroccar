@@ -1,10 +1,11 @@
 import Button from "@/components/Button";
+import Map from "@/components/Map";
 import { createTrip } from "@/services/tripsService";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { getAuth } from "firebase/auth";
 import { serverTimestamp } from "firebase/firestore";
 import { useState } from "react";
-import { ActivityIndicator, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
 export default function TripsCreationScreen() {
@@ -17,6 +18,14 @@ export default function TripsCreationScreen() {
 
     const [selectedOption, setSelectedOption] = useState('Destination');
     const options = ['Destination', 'Départ'];
+    
+    const SCHOOL_ADDRESS = "Lycée Campus Notre Dame du ROC";
+
+    const currentOrigin =
+    selectedOption === "Destination" ? depart : SCHOOL_ADDRESS;
+
+    const currentDestination =
+    selectedOption === "Destination" ? SCHOOL_ADDRESS : destination;
 
     const handleDateChange = (event: any, selectedDate?: Date) => {
         const currentDate = selectedDate || date;
@@ -78,7 +87,7 @@ export default function TripsCreationScreen() {
     }
 
 return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
             <View style={styles.form}>
               <Text style={styles.titre}>Créer un trajet</Text>
               <Text style={styles.text}>Veuillez remplir les informations du trajet</Text>
@@ -126,6 +135,14 @@ return (
                   <Text style={styles.label}>Nombre de places disponibles</Text>
                   <TextInput style={styles.input} placeholder="Entrez le nombre de places" value={nbplace.toString()} onChangeText={(text) => setNbPlace(Number(text))} keyboardType="numeric" />
               </View>
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Aperçu du trajet</Text>
+                <Map
+                    originAddress={currentOrigin}
+                    destinationAddress={currentDestination}
+                    height={260}
+                />
+              </View>
               <View style={{ alignItems: 'center'}}>
                   {isLoading ? (
                       <ActivityIndicator size="large" color="#fff" style={{ marginTop: 15 }} />
@@ -134,7 +151,7 @@ return (
                   )}
               </View>
             </View>
-        </View>
+        </ScrollView>
     );
 }
 
@@ -142,8 +159,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#25292e',
+    },  
+    scrollContent: {
         alignItems: 'center',
-        justifyContent: 'center',
+        paddingVertical: 20,
     },  
     titre: {
         color: '#fff',

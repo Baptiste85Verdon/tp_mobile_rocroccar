@@ -56,6 +56,14 @@ export default function RootLayout() {
                         <Ionicons name={focused? 'person-sharp' : 'person-outline'} color={color} size={24} />
                     ),
                 }} />
+            <Tabs.Screen
+                name="testMap"
+                options={{ 
+                    title: "Test Map",
+                    tabBarIcon: ({ color, focused}) => (
+                        <Ionicons name={focused? 'map-sharp' : 'map-outline'} color={color} size={24} />
+                    ),
+                }} />
         </Tabs>
     );
 }
